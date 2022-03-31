@@ -33,8 +33,8 @@ public class SQL {
     }
 
     /**
-     * gets the number of available cages at the chosen location over the year
-     * @param address is the location/address where the user will search
+     * gets the number of available cages at the chosen location over a year
+     * @param addressZip is the location/address where the user will search
      * @return all cages that are available
      */
     public static List<String> getAvailableCages(String addressZip){
@@ -203,7 +203,7 @@ public class SQL {
      * creates a new booking in the table Booking in the database based on the
      * @param phoneNum is the phone number from the customer
      * @param animalName is the name from the customers animal
-     * @param location is location of the animal shelter
+     * @param addressZip is location of the animal shelter
      * @param weekStart is the week number when the animal will arrive
      * @param weekAmount is the number of weeks the animal will stay at the shelter
      */
@@ -393,7 +393,7 @@ public class SQL {
     public static void addLocation(String address, int cages, int zipCode){
         connect();
         try{
-            // reads the stored procedure to create a new animal in the database
+            // reads the stored procedure to create a new location in the database
             PreparedStatement ps = con.prepareStatement("exec insertLocation '"+address+"',"+cages+","+zipCode+";");
             // executes the stored procedure and creates a new animal
             ps.executeUpdate();
