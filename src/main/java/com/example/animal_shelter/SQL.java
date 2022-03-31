@@ -1,5 +1,7 @@
 package com.example.animal_shelter;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQL {
 
@@ -30,26 +32,47 @@ public class SQL {
         }
     }
 
-    public static void availableCages(int week, String address){
+    /**
+     * gets the number of available cages at the chosen location over the year
+     * @param address is the location/address where the user will search
+     * @return all cages that are available
+     */
+    public static List<String> getAvailableCages(String address){
+        List<String> projectList = new ArrayList<>();
         connect();
+
         try {
-            PreparedStatement ps = con.prepareStatement("exec weekAvailable "+week+", '"+address+"';");
+            PreparedStatement ps = con.prepareStatement("weekAvailable '"+address+"'");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()){
-                System.out.println("Available: "+rs.getString(1));
-            }
 
+                String no = rs.getString(1);
+
+                projectList.add(no);
+
+            }
             ps.close();
             rs.close();
-
             disconnect();
+
+            return projectList;
+
         }catch (SQLException e) {
             System.err.println(e.getMessage());
             disconnect();
+            return null;
         }
     }
 
+    /**
+     * creates a new customer in the Customer table in the database by reading in the
+     * @param phoneNum is the phone number of the customer (PK in the Table Customer)
+     * @param customerName is the customer name
+     * @param email is the E-mail address of the customer
+     * @param address is the address from the customer
+     * @param zipCode is the city where the customer lives (FK from table City)
+     */
     public static void addCustomer(String phoneNum, String customerName, String email, String address, int zipCode){
         connect();
         try {

@@ -4,15 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Scenehandler {
 
@@ -29,6 +28,8 @@ public class Scenehandler {
     //region [Booking Scene]
 
     public static void bookingScene(){
+
+        // Here we create the root
         Pane pane = new Pane();
         pane.setStyle("-fx-background-color: LightBlue");
 
@@ -46,12 +47,7 @@ public class Scenehandler {
             customerScene();
         });
 
-        TextField phoneText = new TextField();
-        phoneText.setLayoutX(150);
-        phoneText.setLayoutY(50);
-        phoneText.setPrefWidth(200);
-        pane.getChildren().add(phoneText);
-
+        // Here we create a label that print an error when the phone number correct
         Label phoneErrorText = new Label();
         phoneErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         phoneErrorText.setLayoutX(150);
@@ -60,10 +56,12 @@ public class Scenehandler {
         phoneErrorText.setVisible(false);
         pane.getChildren().add(phoneErrorText);
 
-        ChoiceBox animalBox = new ChoiceBox();
+        // Here we create a dropdown box that can show the animals of a customer
+        ComboBox animalBox = new ComboBox();
         animalBox.setLayoutX(150);
         animalBox.setLayoutY(100);
         animalBox.setPrefWidth(200);
+        animalBox.setVisibleRowCount(5);
         pane.getChildren().add(animalBox);
 
         // Here we create a label that prints an error when the user forgot to select an animal
@@ -76,19 +74,7 @@ public class Scenehandler {
         animalErrorText.setVisible(false);
         pane.getChildren().add(animalErrorText);
 
-        // TEST TEST
-        ArrayList<String> arrayList = new ArrayList();
-        arrayList.add("Nice");
-        ObservableList observableList = FXCollections.observableArrayList(arrayList);
-        animalBox.setItems(observableList);
-        //
-
-        ChoiceBox weekAmountBox = new ChoiceBox();
-        weekAmountBox.setLayoutX(200);
-        weekAmountBox.setLayoutY(175);
-        weekAmountBox.setPrefWidth(150);
-        pane.getChildren().add(weekAmountBox);
-
+        // Here we create a label that print an error when the user forgot to select the number of weeks
         Label weekAmountErrorText = new Label();
         weekAmountErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         weekAmountErrorText.setText("Needs to have selected");
@@ -98,12 +84,15 @@ public class Scenehandler {
         weekAmountErrorText.setVisible(false);
         pane.getChildren().add(weekAmountErrorText);
 
-        ChoiceBox weekStartBox = new ChoiceBox();
+        // Here we create the dropdown box that shows the options for first week of a booking period
+        ComboBox weekStartBox = new ComboBox();
         weekStartBox.setLayoutX(50);
         weekStartBox.setLayoutY(175);
         weekStartBox.setPrefWidth(150);
+        weekStartBox.setVisibleRowCount(5);
         pane.getChildren().add(weekStartBox);
 
+        // Here we create a label that print an error when the user forgot to select the witch week
         Label weekStartErrorText = new Label();
         weekStartErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         weekStartErrorText.setText("Needs to have selected");
@@ -112,6 +101,82 @@ public class Scenehandler {
         weekStartErrorText.setPrefWidth(150);
         weekStartErrorText.setVisible(false);
         pane.getChildren().add(weekStartErrorText);
+
+        // Here we create the dropdown box that shows the options to choose the amount of weeks you want to book
+        ComboBox weekAmountBox = new ComboBox();
+        weekAmountBox.setLayoutX(200);
+        weekAmountBox.setLayoutY(175);
+        weekAmountBox.setPrefWidth(150);
+        weekAmountBox.setVisibleRowCount(5);
+        weekAmountBox.setOnAction(e -> {
+
+            // The weekamountbox gets checked
+            if (weekAmountBox.getValue()!=null){
+                // A list is received from the database with the available cages
+                List listWeeksAvailableCages = SQL.getAvailableCages("Krike Ale 13");
+                ArrayList listWeeksAvailable = new ArrayList();
+
+                // The list is gone through and all the unavailable weeks (depending on the amount of weeks you want) gets nullyfied
+                for (int i = 0; i < listWeeksAvailableCages.size()-1; i++) {
+                    // If the week has no available cages, then this nullyfies the weekamount behind the given week, so there isn't any overlap problems
+                    if (Integer.parseInt(listWeeksAvailableCages.get(i).toString())==0){
+                        for (int j = i-Integer.parseInt(weekAmountBox.getValue().toString())+1; j<i; j++){
+                            if (j>0){
+                                listWeeksAvailableCages.set(j,0);
+                            }
+                        }
+                    }
+                }
+                // This adds the available weeks to the new arraylist
+                for (int i = 0; i < listWeeksAvailableCages.size()-Integer.parseInt(weekAmountBox.getValue().toString())+1; i++) {
+                    if (Integer.parseInt(listWeeksAvailableCages.get(i).toString())>0){
+                        listWeeksAvailable.add(i+1);
+                    }
+                }
+
+                // If there is available weeks, then they get added to the dropdown box
+                if (listWeeksAvailable.size()>0){
+                    weekStartErrorText.setVisible(false);
+                    ObservableList observableList = FXCollections.observableArrayList(listWeeksAvailable);
+                    weekStartBox.setItems(observableList);
+                } else {
+                    // It gets reset if there is no results
+                    weekStartBox.getItems().clear();
+                    weekStartErrorText.setVisible(true);
+                    weekStartErrorText.setText("No results");
+                }
+
+                // The available weeks books gets reset, when the week amount chosen is reset
+            } else if (weekAmountBox.getValue()==null) {
+                weekStartBox.getItems().clear();
+            }
+
+        });
+        pane.getChildren().add(weekAmountBox);
+
+        // This adds the 52 weeks in a year
+        List weekAmountList = new ArrayList();
+        for (int i = 1; i < 53; i++) {
+            weekAmountList.add(i);
+        }
+        ObservableList weekAmountObservableList = FXCollections.observableArrayList(weekAmountList);
+        weekAmountBox.setItems(weekAmountObservableList);
+
+        // Here we create the textfield where you can type in the phone number for the customer that wants to make a booking
+        TextField phoneText = new TextField();
+        phoneText.setLayoutX(150);
+        phoneText.setLayoutY(50);
+        phoneText.setPrefWidth(200);
+        phoneText.setOnKeyReleased(e -> {
+            if (phoneText.getText().length()==8 && SQL.checkPhoneNum(phoneText.getText())){
+                List list = SQL.getAnimalNames(phoneText.getText());
+                ObservableList observableList = FXCollections.observableArrayList(list);
+                animalBox.setItems(observableList);
+            } else if (animalBox.getItems().size()>0) {
+                animalBox.getItems().clear();
+            }
+        });
+        pane.getChildren().add(phoneText);
 
         Label phoneLabel = new Label();
         phoneLabel.setText("Phone:");
@@ -158,19 +223,25 @@ public class Scenehandler {
         pane.getChildren().add(butBook);
         butBook.setOnAction(actionEvent -> {
 
+            // This is the overall error state of the booking
             boolean error;
             error = false;
-            successText.setVisible(false);
+            if (successText.isVisible()) {
+                successText.setVisible(false);
+            }
 
+            // Checks the phone for different errors
             if (phoneText.getText().length()==8){
                 phoneErrorText.setVisible(false);
 
+                // Can't find it
                 if (!SQL.checkPhoneNum(phoneText.getText())){
                     phoneErrorText.setVisible(true);
                     phoneErrorText.setText("Customer not found");
                     error=true;
                 }
 
+                // Try for num
                 try {
                     Integer.parseInt(phoneText.getText());
                 } catch (NumberFormatException e){
@@ -182,13 +253,17 @@ public class Scenehandler {
             } else {
                 phoneErrorText.setVisible(true);
                 error=true;
+
+                // No text
                 if (phoneText.getText().length()<=0){
                     phoneErrorText.setText("Needs to be filled");
                 } else {
+                    // Needs to be 8 chars long
                     phoneErrorText.setText("PhoneNum needs to be 8 chars");
                 }
             }
 
+            // The animal box is empty
             if (animalBox.getValue()!=null){
                 animalErrorText.setVisible(false);
             } else {
@@ -196,6 +271,7 @@ public class Scenehandler {
                 error=true;
             }
 
+            // The weekstart box is empty
             if (weekStartBox.getValue()!=null){
                 weekStartErrorText.setVisible(false);
             } else {
@@ -203,6 +279,7 @@ public class Scenehandler {
                 error=true;
             }
 
+            // The weekamount box is empty
             if (weekAmountBox.getValue()!=null){
                 weekAmountErrorText.setVisible(false);
             } else {
@@ -210,15 +287,20 @@ public class Scenehandler {
                 error=true;
             }
 
-
+            // The function of the button if there is no errors
             if (!error){
-                successText.setVisible(false);
+                successText.setVisible(true);
                 SQL.addBooking(phoneText.getText(),
                         animalBox.getValue().toString(),
-                        ""/*Missing*/,
+                        "Krike Ale 13",
                         Integer.parseInt(weekStartBox.getValue().toString()),
                         Integer.parseInt(weekAmountBox.getValue().toString())
                 );
+
+                phoneText.setText("");
+                animalBox.getItems().clear();
+                weekStartBox.getItems().clear();
+                weekAmountBox.setValue(null);
             }
 
         });
@@ -253,9 +335,11 @@ public class Scenehandler {
 
     public static void animalScene(){
 
+        // The root of the scene gets created
         Pane pane = new Pane();
         pane.setStyle("-fx-background-color: LightBlue");
 
+        // The scene gets set and the stage aswell
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
 
@@ -346,14 +430,17 @@ public class Scenehandler {
         pane.getChildren().add(butAdd);
         butAdd.setOnAction(actionEvent -> {
 
+            // This the error state of the entire add animal function
             boolean error;
             error = false;
             if (successText.isVisible()){
                 successText.setVisible(false);
             }
 
+            // The phoneNum gets checked for different things
             if (phoneText.getText().length()==8){
                 phoneErrorText.setVisible(false);
+
 
                 if (!SQL.checkPhoneNum(phoneText.getText())){
                     phoneErrorText.setVisible(true);
