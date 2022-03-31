@@ -80,7 +80,7 @@ public class SQL {
         try {
             // reads the stored procedure to create a new customer in the database
             PreparedStatement ps = con.prepareStatement("exec insertCustomer '"+phoneNum+"', '"+customerName+"', '"+email+"', '"+address+"', "+zipCode+";");
-            // executes the stored procedure 
+            // executes the stored procedure and creates a new customer
             ps.executeUpdate();
 
             System.out.println("Customer ("+customerName+") has been added");
@@ -103,7 +103,9 @@ public class SQL {
     public static void addAnimal(String animalName, String animalTyp, String phoneNum){
         connect();
         try{
+            // reads the stored procedure to create a new animal in the database
             PreparedStatement ps = con.prepareStatement("exec insertAnimal '"+animalName+"','"+animalTyp+"','"+phoneNum+"';");
+            // executes the stored procedure and creates a new animal
             ps.executeUpdate();
 
             System.out.println("Animal ("+animalName+") has been added");
@@ -126,9 +128,12 @@ public class SQL {
         connect();
 
         try{
+            // reads the stored procedure to check if the phone number already exist
             PreparedStatement ps = con.prepareStatement("exec checkPhoneNum '"+phoneNum+"';");
+            // checks the database if the phone number exist until no data
             ResultSet rs = ps.executeQuery();
 
+            // returns a boolean true if one exist and false if not
             if (rs.next()){
                 rs.getString(1);
 
@@ -163,9 +168,12 @@ public class SQL {
         connect();
 
         try{
+            // reads the stored procedure to check if the E-Mail already exist
             PreparedStatement ps = con.prepareStatement("exec checkEmail '"+email+"';");
+            // checks the database if the phone number exist until no data
             ResultSet rs = ps.executeQuery();
 
+            // returns a boolean true if one exist and false if not
             if (rs.next()){
                 rs.getString(1);
 
@@ -204,7 +212,9 @@ public class SQL {
         connect();
 
         try {
+            // reads the stored procedure to create or select a period
             PreparedStatement ps = con.prepareStatement("exec createPeriods "+weekStart+","+weekAmount+";");
+            // executes the stored procedure
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e){
@@ -214,7 +224,9 @@ public class SQL {
         }
 
         try {
+            // reads the stored procedure to create a booking
             PreparedStatement ps = con.prepareStatement("exec insertBooking '"+phoneNum+"','"+animalName+"','"+location+"',"+weekStart+","+weekAmount+";");
+            // executes the stored procedure and creates the booking
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e){
@@ -237,13 +249,15 @@ public class SQL {
         List<String> projectList = new ArrayList<>();
         connect();
         try {
+            // reads the stored procedure to find all animal that where stored under the given phone number
             PreparedStatement ps = con.prepareStatement("getAnimalNames '"+phoneNum+"';");
+            // executes the stored procedure until there is no data
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()){
-
+                // stores the name of the animal
                 String no = rs.getString(1);
-
+                // adds the animal name to an arraylist
                 projectList.add(no);
 
             }
@@ -269,18 +283,25 @@ public class SQL {
         List<String> projectList = new ArrayList<>();
         connect();
         try {
+            // reads the stored procedure to find the animal when it will arrive and how long it will stay
             PreparedStatement ps = con.prepareStatement("getStartAndAmount '"+phoneNum+"';");
+            // executes the stored procedure until there is no data
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()){
-
+                //stores the name from the animal
                 String no1 = rs.getString(1);
+                // adds the name to the arraylist
                 projectList.add(no1);
 
+                //stores the week
                 String no2 = rs.getString(2);
+                // adds the week to the arraylist
                 projectList.add(no2);
 
+                //stores the number of weeks
                 String no3 = rs.getString(3);
+                // adds the number of weeks to the arraylist
                 projectList.add(no3);
 
             }
