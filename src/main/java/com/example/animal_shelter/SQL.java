@@ -200,7 +200,68 @@ public class SQL {
 
     }
 
-    public static void getCustomer(){
+    /**
+     * is looking in the database for all animal of a given customer
+     * by searching with the phone number
+     * @param phoneNum is the phone number of the costumer (PK Customer table and FK Animal table)
+     * @return all name some was creating in the database with this phone number
+     */
+    public static List<String> getAnimalNames(String phoneNum){
+        List<String> projectList = new ArrayList<>();
+        connect();
+        try {
+            PreparedStatement ps = con.prepareStatement("getAnimalNames '"+phoneNum+"';");
+            ResultSet rs = ps.executeQuery();
 
+            while (rs.next()){
+
+                String no = rs.getString(1);
+
+                projectList.add(no);
+
+            }
+            ps.close();
+            rs.close();
+            disconnect();
+
+            return projectList;
+
+        }catch (SQLException e) {
+            System.err.println(e.getMessage());
+            disconnect();
+            return null;
+        }
+    }
+
+    public static List<String> getStartAndAmount(String phoneNum){
+        List<String> projectList = new ArrayList<>();
+        connect();
+        try {
+            PreparedStatement ps = con.prepareStatement("getStartAndAmount '"+phoneNum+"';");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+
+                String no1 = rs.getString(1);
+                projectList.add(no1);
+
+                String no2 = rs.getString(2);
+                projectList.add(no2);
+
+                String no3 = rs.getString(3);
+                projectList.add(no3);
+
+            }
+            ps.close();
+            rs.close();
+            disconnect();
+
+            return projectList;
+
+        }catch (SQLException e) {
+            System.err.println(e.getMessage());
+            disconnect();
+            return null;
+        }
     }
 }

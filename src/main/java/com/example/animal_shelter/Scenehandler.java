@@ -32,15 +32,17 @@ public class Scenehandler {
         Pane pane = new Pane();
         pane.setStyle("-fx-background-color: LightBlue");
 
+        // Here the scene gets set and the stage aswell
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
 
-        Button butC = new Button();
-        butC.setLayoutY(350);
-        butC.setLayoutX(250);
-        butC.setText("Create Customer");
-        pane.getChildren().add(butC);
-        butC.setOnAction(actionEvent -> {
+        // Here we create the button that switches to the create customer screen
+        Button butCustomer = new Button();
+        butCustomer.setLayoutY(350);
+        butCustomer.setLayoutX(250);
+        butCustomer.setText("Create Customer");
+        pane.getChildren().add(butCustomer);
+        butCustomer.setOnAction(actionEvent -> {
             customerScene();
         });
 
@@ -148,6 +150,7 @@ public class Scenehandler {
         successText.setVisible(false);
         pane.getChildren().add(successText);
 
+        // Here we create the button that makes the booking (it starts checking all errors and stores data if no errors)
         Button butBook = new Button();
         butBook.setLayoutX(258);
         butBook.setLayoutY(300);
@@ -220,6 +223,7 @@ public class Scenehandler {
 
         });
 
+        // Here we create the button that switches the screen to the screen where you can add a new pet to a customer
         Button butAnimal = new Button();
         butAnimal.setLayoutX(50);
         butAnimal.setLayoutY(350);
@@ -229,6 +233,17 @@ public class Scenehandler {
             animalScene();
         });
 
+        // Here we create the button that switches the screen to a booking overview screen
+        Button butShowBook = new Button();
+        butShowBook.setLayoutX(151);
+        butShowBook.setLayoutY(350);
+        butShowBook.setText("Show bookings");
+        pane.getChildren().add(butShowBook);
+        butShowBook.setOnAction(actionEvent -> {
+            showBookingsScene();
+        });
+
+        // Set title
         masterStage.setTitle("Animal Shelter");
     }
 
@@ -651,6 +666,90 @@ public class Scenehandler {
         butBooking.setOnAction(actionEvent ->{
             bookingScene();
         });
+
+    }
+
+    //endregion
+
+    //region [Show Bookings]
+
+    public static void showBookingsScene(){
+        Pane pane = new Pane();
+        pane.setStyle("-fx-background-color: LightBlue");
+
+        Scene scene = new Scene(pane,420,420);
+        masterStage.setScene(scene);
+
+        ArrayList<ArrayList> data = new ArrayList<>();
+        ObservableList<ArrayList> arrayLists = FXCollections.observableArrayList();
+
+        Label phoneLabel = new Label();
+        phoneLabel.setText("Phone:");
+        phoneLabel.setLayoutX(50);
+        phoneLabel.setLayoutY(48);
+        phoneLabel.setStyle("-fx-font-size: 20");
+        pane.getChildren().add(phoneLabel);
+
+        TableView bookingTable = new TableView();
+        bookingTable.setLayoutX(50);
+        bookingTable.setLayoutY(100);
+        bookingTable.setPrefHeight(220);
+        bookingTable.setPrefWidth(300);
+
+        TableColumn<bookingItem, String> nameCol = new TableColumn<>("AnimalName");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("animalName"));
+
+        TableColumn<bookingItem, String> weekStartCol = new TableColumn<>("WeekStart");
+        weekStartCol.setCellValueFactory(new PropertyValueFactory<>("weekStart"));
+
+        TableColumn<bookingItem, String> weekAmountCol = new TableColumn<>("WeekAmount");
+        weekAmountCol.setCellValueFactory(new PropertyValueFactory<>("weekAmount"));
+
+        nameCol.setPrefWidth(100);
+        weekStartCol.setPrefWidth(100);
+        weekAmountCol.setPrefWidth(100);
+        bookingTable.getColumns().addAll(nameCol, weekStartCol, weekAmountCol);
+        pane.getChildren().add(bookingTable);
+
+        // Here we create the phoneText box
+        TextField phoneText = new TextField();
+        phoneText.setLayoutX(150);
+        phoneText.setLayoutY(50);
+        phoneText.setPrefWidth(200);
+        pane.getChildren().add(phoneText);
+        phoneText.setOnKeyTyped(e -> {
+            if (phoneText.getText().length()==8 && SQL.checkPhoneNum(phoneText.getText())){
+
+                List listNames;
+                listNames = SQL.getStartAndAmount(phoneText.getText());
+                System.out.println(listNames);
+                for (int i = 0; i < listNames.size(); i++) {
+                    bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString()));
+                    i+=2;
+                }
+
+                // The scoreCol gets a rule, that it should start as descending
+                weekStartCol.setSortType(TableColumn.SortType.ASCENDING);
+
+                // The tableView uses the rule from before
+                bookingTable.getSortOrder().addAll(weekStartCol);
+
+                listNames.clear();
+
+            } else if (bookingTable.getItems().size()>0) {
+                bookingTable.getItems().clear();
+            }
+        });
+
+        Button butBooking = new Button();
+        butBooking.setLayoutX(50);
+        butBooking.setLayoutY(350);
+        butBooking.setText("Booking");
+        pane.getChildren().add(butBooking);
+        butBooking.setOnAction(actionEvent ->{
+            bookingScene();
+        });
+
 
     }
 
