@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="sqljdbc4">
+  <library name="mssql-jdbc-9.4.1.jre16">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Sql Drivers/sqljdbc4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mssql-jdbc-9.4.1.jre16.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

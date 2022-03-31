@@ -13,7 +13,7 @@ public class SQL {
     public static void connect() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=Animal_Schelter","Patrick","123456");
+            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=Animal_Schelter","sa","123456");
             //System.out.println("Connected to "+con.getCatalog());
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println(e.getMessage());
@@ -296,4 +296,28 @@ public class SQL {
             return null;
         }
     }
+
+    /**
+     * deletes a book from the database by reading in the parameter
+     * @param phoneNum is the phone number from the customer
+     * @param animalName is the animal name
+     * @param weekStart is the week when the animal will arrive
+     * @param amountWeek is the number of weeks the animal have to stay
+     *
+     */
+    public static void deleteBooking(String phoneNum,String animalName,int weekStart,int amountWeek){
+        connect();
+        try {
+            // reads the stored procedure to delete a booking from the database
+            PreparedStatement ps = con.prepareStatement("deleteBooking '"+phoneNum+"','"+animalName+"',"+weekStart+","+amountWeek+";");
+            // executes the stored procedures delete the booking
+            ps.executeUpdate();
+            ps.close();
+            disconnect();
+        }catch (SQLException e) {
+            System.err.println(e.getMessage());
+            disconnect();
+        }
+    }
+
 }

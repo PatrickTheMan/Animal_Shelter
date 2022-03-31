@@ -168,12 +168,33 @@ public class Scenehandler {
         phoneText.setLayoutY(50);
         phoneText.setPrefWidth(200);
         phoneText.setOnKeyReleased(e -> {
-            if (phoneText.getText().length()==8 && SQL.checkPhoneNum(phoneText.getText())){
-                List list = SQL.getAnimalNames(phoneText.getText());
-                ObservableList observableList = FXCollections.observableArrayList(list);
-                animalBox.setItems(observableList);
+            if (phoneText.getText().length()==8){
+                phoneErrorText.setVisible(false);
+
+                // Try for number
+                try {
+                    Integer.parseInt(phoneText.getText());
+                } catch (NumberFormatException ex){
+                    phoneErrorText.setVisible(true);
+                    phoneErrorText.setText("Not a number");
+                }
+
+                // Not found or found
+                if (!SQL.checkPhoneNum(phoneText.getText())){
+                    phoneErrorText.setVisible(true);
+                    phoneErrorText.setText("Customer not found");
+                } else {
+                    List list = SQL.getAnimalNames(phoneText.getText());
+                    ObservableList observableList = FXCollections.observableArrayList(list);
+                    animalBox.setItems(observableList);
+                }
+
             } else if (animalBox.getItems().size()>0) {
                 animalBox.getItems().clear();
+
+                if (phoneErrorText.isVisible()){
+                    phoneErrorText.setVisible(false);
+                }
             }
         });
         pane.getChildren().add(phoneText);
@@ -290,6 +311,15 @@ public class Scenehandler {
             // The function of the button if there is no errors
             if (!error){
                 successText.setVisible(true);
+
+                // The receipt is printed out
+                Main.printReceipt(phoneText.getText(),
+                        animalBox.getValue().toString(),
+                        weekStartBox.getValue().toString(),
+                        weekAmountBox.getValue().toString()
+                );
+
+                // The booking is made
                 SQL.addBooking(phoneText.getText(),
                         animalBox.getValue().toString(),
                         "Krike Ale 13",
@@ -343,12 +373,41 @@ public class Scenehandler {
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
 
+        // Here we create a label that print an error when the phone number don't exists
+        Label phoneErrorText = new Label();
+        phoneErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
+        phoneErrorText.setLayoutX(130);
+        phoneErrorText.setLayoutY(75);
+        phoneErrorText.setVisible(false);
+        pane.getChildren().add(phoneErrorText);
+
         // Here we create a text field where the user can enter the phone number
         TextField phoneText = new TextField();
         phoneText.setLayoutX(130);
         phoneText.setLayoutY(50);
         phoneText.setPrefWidth(220);
         pane.getChildren().add(phoneText);
+        phoneText.setOnKeyTyped(e -> {
+            // The phoneNum gets checked for different things
+            if (phoneText.getText().length()==8){
+                phoneErrorText.setVisible(false);
+
+                // Not found
+                if (!SQL.checkPhoneNum(phoneText.getText())){
+                    phoneErrorText.setVisible(true);
+                    phoneErrorText.setText("Customer not found");
+                }
+
+                // Try for number
+                try {
+                    Integer.parseInt(phoneText.getText());
+                } catch (NumberFormatException ex){
+                    phoneErrorText.setVisible(true);
+                    phoneErrorText.setText("Not a number");
+                }
+
+            }
+        });
 
         // Here we create a text field where the user can enter the name from the animal
         TextField nameText = new TextField();
@@ -383,14 +442,6 @@ public class Scenehandler {
         typeErrorText.setPrefWidth(220);
         typeErrorText.setVisible(false);
         pane.getChildren().add(typeErrorText);
-
-        // Here we create a label that print an error when the phone number don't exists
-        Label phoneErrorText = new Label();
-        phoneErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
-        phoneErrorText.setLayoutX(130);
-        phoneErrorText.setLayoutY(75);
-        phoneErrorText.setVisible(false);
-        pane.getChildren().add(phoneErrorText);
 
         Label phoneLabel = new Label();
         phoneLabel.setText("Phone:");
@@ -796,6 +847,16 @@ public class Scenehandler {
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
 
+        // Here we create a label that print an error when the phone number correct
+        Label phoneErrorText = new Label();
+        phoneErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
+        phoneErrorText.setText("Customer not found");
+        phoneErrorText.setLayoutX(150);
+        phoneErrorText.setLayoutY(75);
+        phoneErrorText.setPrefWidth(200);
+        phoneErrorText.setVisible(false);
+        pane.getChildren().add(phoneErrorText);
+
         Label phoneLabel = new Label();
         phoneLabel.setText("Phone:");
         phoneLabel.setLayoutX(50);
@@ -835,26 +896,39 @@ public class Scenehandler {
         phoneText.setPrefWidth(200);
         pane.getChildren().add(phoneText);
         phoneText.setOnKeyTyped(e -> {
-            if (phoneText.getText().length()==8 && SQL.checkPhoneNum(phoneText.getText())){
 
-                List listNames;
-                listNames = SQL.getStartAndAmount(phoneText.getText());
-                System.out.println(listNames);
-                for (int i = 0; i < listNames.size(); i++) {
-                    bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString()));
-                    i+=2;
+            if (phoneText.getText().length()==8){
+                if (SQL.checkPhoneNum(phoneText.getText())){
+
+                    // This is the list used for the tableview
+                    List listNames;
+                    listNames = SQL.getStartAndAmount(phoneText.getText());
+
+                    // This populates the bookingtable
+                    for (int i = 0; i < listNames.size(); i++) {
+                        bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString()));
+                        i+=2;
+                    }
+
+                    // The scoreCol gets a rule, that it should start as descending
+                    weekStartCol.setSortType(TableColumn.SortType.ASCENDING);
+
+                    // The tableView uses the rule from before
+                    bookingTable.getSortOrder().addAll(weekStartCol);
+
+                    // Clears the datalist
+                    listNames.clear();
+
+                } else {
+                    phoneErrorText.setVisible(true);
                 }
-
-                // The scoreCol gets a rule, that it should start as descending
-                weekStartCol.setSortType(TableColumn.SortType.ASCENDING);
-
-                // The tableView uses the rule from before
-                bookingTable.getSortOrder().addAll(weekStartCol);
-
-                listNames.clear();
 
             } else if (bookingTable.getItems().size()>0) {
                 bookingTable.getItems().clear();
+
+                if (phoneErrorText.isVisible()){
+                    phoneErrorText.setVisible(false);
+                }
             }
         });
 

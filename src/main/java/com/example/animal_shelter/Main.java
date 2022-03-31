@@ -25,7 +25,15 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static void printRecipt(String phoneNum, String petName, String weekStart, String weekAmount){
+    public static void printReceipt(String phoneNum, String petName, String weekStart, String weekAmount){
+
+        System.out.println("Confirmation Receipt");
+        System.out.println("----------------------------");
+        System.out.println("PhoneNum: "+phoneNum);
+        System.out.println("Pet Name: "+petName);
+        System.out.println("WeekStart: "+weekStart);
+        System.out.println("WeekAmount: "+weekAmount);
+        System.out.println("----------------------------");
 
     }
 }
