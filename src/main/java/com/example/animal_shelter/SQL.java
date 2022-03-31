@@ -289,7 +289,7 @@ public class SQL {
         connect();
         try {
             // reads the stored procedure to find the animal when it will arrive and how long it will stay
-            PreparedStatement ps = con.prepareStatement("getStartAndAmount '"+phoneNum+"';");
+            PreparedStatement ps = con.prepareStatement("getStartAndAmountV2 '"+phoneNum+"';");
             // executes the stored procedure until there is no data
             ResultSet rs = ps.executeQuery();
 
@@ -309,6 +309,10 @@ public class SQL {
                 // adds the number of weeks to the arraylist
                 projectList.add(no3);
 
+                //stores the address and zip
+                String no4 = rs.getString(4) + ", " + rs.getString(5);
+                // adds the number of weeks to the arraylist
+                projectList.add(no4);
             }
             ps.close();
             rs.close();

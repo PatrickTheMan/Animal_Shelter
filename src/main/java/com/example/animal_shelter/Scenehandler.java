@@ -83,10 +83,29 @@ public class Scenehandler {
         // Here we create the dropdown box that shows the options for first week of a booking period
         ComboBox weekStartBox = new ComboBox();
         weekStartBox.setLayoutX(50);
-        weekStartBox.setLayoutY(175);
+        weekStartBox.setLayoutY(225);
         weekStartBox.setPrefWidth(150);
         weekStartBox.setVisibleRowCount(5);
-        pane.getChildren().add(weekStartBox);
+
+        // This is the dropdown box for choosing the location
+        ComboBox locationBox = new ComboBox();
+        locationBox.setLayoutX(150);
+        locationBox.setLayoutY(150);
+        locationBox.setPrefWidth(200);
+        // Add the locations to the location box
+        for (String s : SQL.getLocation()){
+            locationBox.getItems().add(s);
+        }
+
+
+        // Here we create a label that print an error when the user forgot to select the witch week
+        Label locationErrorText = new Label();
+        locationErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
+        locationErrorText.setText("Needs to have selected");
+        locationErrorText.setLayoutX(150);
+        locationErrorText.setLayoutY(175);
+        locationErrorText.setPrefWidth(200);
+        locationErrorText.setVisible(false);
 
         // Here we create a label that print an error when the user forgot to select the witch week
         Label weekStartErrorText = new Label();
@@ -100,7 +119,7 @@ public class Scenehandler {
         // Here we create the dropdown box that shows the options to choose the amount of weeks you want to book
         ComboBox weekAmountBox = new ComboBox();
         weekAmountBox.setLayoutX(200);
-        weekAmountBox.setLayoutY(175);
+        weekAmountBox.setLayoutY(225);
         weekAmountBox.setPrefWidth(150);
         weekAmountBox.setVisibleRowCount(5);
         weekAmountBox.setOnAction(e -> {
@@ -196,6 +215,12 @@ public class Scenehandler {
                 }
             }
         });
+
+        Label locationLabel = new Label();
+        locationLabel.setText("Location:");
+        locationLabel.setLayoutX(50);
+        locationLabel.setLayoutY(148);
+        locationLabel.setStyle("-fx-font-size: 20");
 
         Label phoneLabel = new Label();
         phoneLabel.setText("Phone:");
@@ -353,6 +378,42 @@ public class Scenehandler {
         butShowBook.setOnAction(actionEvent -> {
             showBookingsScene();
         });
+
+        Button butCreateLocation = new Button();
+        butCreateLocation.setLayoutX(50);
+        butCreateLocation.setLayoutY(300);
+        butCreateLocation.setText("Create location");
+        butCreateLocation.setOnAction(actionEvent -> {
+            createLocationScene();
+        });
+
+        // The different objects gets added in the right order
+        pane.getChildren().add(phoneText);
+
+        pane.getChildren().add(animalBox);
+        pane.getChildren().add(locationBox);
+        pane.getChildren().add(weekStartBox);
+        pane.getChildren().add(weekAmountBox);
+
+        pane.getChildren().add(weekAmountLabel);
+        pane.getChildren().add(weekStartLabel);
+        pane.getChildren().add(animalLabel);
+        pane.getChildren().add(phoneLabel);
+        pane.getChildren().add(locationLabel);
+
+        pane.getChildren().add(weekStartErrorText);
+        pane.getChildren().add(locationErrorText);
+        pane.getChildren().add(weekAmountErrorText);
+        pane.getChildren().add(animalErrorText);
+        pane.getChildren().add(phoneErrorText);
+
+        pane.getChildren().add(successText);
+
+        pane.getChildren().add(butBook);
+        pane.getChildren().add(butCreateLocation);
+        pane.getChildren().add(butAnimal);
+        pane.getChildren().add(butShowBook);
+        pane.getChildren().add(butCustomer);
 
         // Set title
         masterStage.setTitle("Animal Shelter");
@@ -865,10 +926,10 @@ public class Scenehandler {
 
         // Here we create a tableview that show the current booking 1.column animal name 2.column starting week 3.column number of weeks
         TableView bookingTable = new TableView();
-        bookingTable.setLayoutX(50);
+        bookingTable.setLayoutX(10);
         bookingTable.setLayoutY(100);
         bookingTable.setPrefHeight(220);
-        bookingTable.setPrefWidth(300);
+        bookingTable.setPrefWidth(400);
 
         // The tableColoum with the animals name
         TableColumn<bookingItem, String> nameCol = new TableColumn<>("AnimalName");
@@ -912,8 +973,8 @@ public class Scenehandler {
 
                     // This populates the bookingable
                     for (int i = 0; i < listNames.size(); i++) {
-                        bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString()));
-                        i+=2;
+                        bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString(),listNames.get(i+3).toString()));
+                        i+=3;
                     }
 
                     // The scoreCol gets a rule, that it should start as descending
