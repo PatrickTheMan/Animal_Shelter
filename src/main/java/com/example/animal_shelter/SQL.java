@@ -5,6 +5,9 @@ public class SQL {
 
     private static Connection con;
 
+    /**
+     *  establishes the connection to the database of the Animal Shelter
+     */
     public static void connect() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -15,6 +18,9 @@ public class SQL {
         }
     }
 
+    /**
+     * disconnects from the database
+     */
     public static void disconnect() {
         try {
             //System.out.println("Disconnected from "+con.getCatalog());
@@ -61,6 +67,12 @@ public class SQL {
         }
     }
 
+    /**
+     * creates a new animal in the table Animal in the database by reading in the
+     * @param animalName is the name of the animal
+     * @param animalTyp  is what kind of animal typ it is
+     * @param phoneNum is the phone number of the customer/owner of the animal (FK from table Customer)
+     */
     public static void addAnimal(String animalName, String animalTyp, String phoneNum){
         connect();
         try{
@@ -78,6 +90,11 @@ public class SQL {
         }
     }
 
+    /**
+     * checked the database whether the phone number already exist
+     * @param phoneNum is the phone number from the customer the user is checking
+     * @return a boolean to se if the already on exist with the same number
+     */
     public static boolean checkPhoneNum(String phoneNum){
         connect();
 
@@ -110,6 +127,11 @@ public class SQL {
         }
     }
 
+    /**
+     * checked the database whether the E-Mail address already exist
+     * @param email is the E-Mail address from the customer the user is checking
+     * @return a boolean to find out if the already on exists with the same E-Mail address
+     */
     public static boolean checkEmail(String email){
         connect();
 
@@ -142,6 +164,14 @@ public class SQL {
         }
     }
 
+    /**
+     * creates a new booking in the table Booking in the database based on the
+     * @param phoneNum is the phone number from the customer
+     * @param animalName is the name from the customers animal
+     * @param location is location of the animal shelter
+     * @param weekStart is the week number when the animal will arrive
+     * @param weekAmount is the number of weeks the animal will stay at the shelter
+     */
     public static void addBooking(String phoneNum, String animalName,String location, int weekStart, int weekAmount){
 
         connect();

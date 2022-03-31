@@ -64,6 +64,7 @@ public class Scenehandler {
         animalBox.setPrefWidth(200);
         pane.getChildren().add(animalBox);
 
+        // Here we create a label that prints an error when the user forgot to select an animal
         Label animalErrorText = new Label();
         animalErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         animalErrorText.setText("Needs to have selected");
@@ -138,6 +139,7 @@ public class Scenehandler {
         weekAmountLabel.setLayoutY(150);
         pane.getChildren().add(weekAmountLabel);
 
+        // Here we create a label that print a text when the booking was successful
         Label successText = new Label();
         successText.setStyle("-fx-text-fill: GREEN; -fx-font-size: 15;");
         successText.setText("Success: Booking Made");
@@ -242,18 +244,21 @@ public class Scenehandler {
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
 
+        // Here we create a text field where the user can enter the phone number
         TextField phoneText = new TextField();
         phoneText.setLayoutX(130);
         phoneText.setLayoutY(50);
         phoneText.setPrefWidth(220);
         pane.getChildren().add(phoneText);
 
+        // Here we create a text field where the user can enter the name from the animal
         TextField nameText = new TextField();
         nameText.setLayoutX(130);
         nameText.setLayoutY(100);
         nameText.setPrefWidth(220);
         pane.getChildren().add(nameText);
 
+        // Here we create a label that print an error when the user forgot to enter a name for the animal
         Label nameErrorText = new Label();
         nameErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         nameErrorText.setText("Needs to be filled");
@@ -263,12 +268,14 @@ public class Scenehandler {
         nameErrorText.setVisible(false);
         pane.getChildren().add(nameErrorText);
 
+        // Here we create a text field where the user can enter the animal typ
         TextField typeText = new TextField();
         typeText.setLayoutX(130);
         typeText.setLayoutY(150);
         typeText.setPrefWidth(220);
         pane.getChildren().add(typeText);
 
+        // Here we create a label that print an error when the user forgot to enter the animal typ
         Label typeErrorText = new Label();
         typeErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         typeErrorText.setText("Needs to be filled");
@@ -278,6 +285,7 @@ public class Scenehandler {
         typeErrorText.setVisible(false);
         pane.getChildren().add(typeErrorText);
 
+        // Here we create a label that print an error when the phone number don't exists
         Label phoneErrorText = new Label();
         phoneErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         phoneErrorText.setLayoutX(130);
@@ -306,6 +314,7 @@ public class Scenehandler {
         typeLabel.setStyle("-fx-font-size: 18");
         pane.getChildren().add(typeLabel);
 
+        // Here we create a label that print a text when the animal was successful created
         Label successText = new Label();
         successText.setStyle("-fx-text-fill: GREEN; -fx-font-size: 15;");
         successText.setText("Success: Animal Added");
@@ -314,6 +323,7 @@ public class Scenehandler {
         successText.setVisible(false);
         pane.getChildren().add(successText);
 
+        // Here we create the button that creates a new animal in the database (it starts checking all errors and stores data if no errors)
         Button butAdd = new Button();
         butAdd.setText("Add");
         butAdd.setLayoutX(310);
@@ -383,6 +393,7 @@ public class Scenehandler {
 
         });
 
+        // Here we create the button that switches to the booking
         Button butBooking = new Button();
         butBooking.setLayoutX(50);
         butBooking.setLayoutY(350);
@@ -405,12 +416,14 @@ public class Scenehandler {
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
 
+        //Here we create a text field to enter customers name
         TextField nameText = new TextField();
         nameText.setLayoutX(130);
         nameText.setLayoutY(50);
         nameText.setPrefWidth(220);
         pane.getChildren().add(nameText);
 
+        //Here we create a label that print an error when the user forgot to enter customers name
         Label nameErrorText = new Label();
         nameErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         nameErrorText.setText("Needs to be filled");
@@ -420,12 +433,14 @@ public class Scenehandler {
         nameErrorText.setVisible(false);
         pane.getChildren().add(nameErrorText);
 
+        //Here we create a text field to enter customer phone number
         TextField phoneText = new TextField();
         phoneText.setLayoutX(130);
         phoneText.setLayoutY(100);
         phoneText.setPrefWidth(220);
         pane.getChildren().add(phoneText);
 
+        //Here we create a label that print an error when the user forgot to enter customers phone number
         Label phoneErrorText = new Label();
         phoneErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         phoneErrorText.setLayoutX(130);
@@ -440,6 +455,7 @@ public class Scenehandler {
         mailText.setPrefWidth(220);
         pane.getChildren().add(mailText);
 
+        //Here we create a label that print an error when the user forgot to enter customers E-Mail address
         Label mailErrorText = new Label();
         mailErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         mailErrorText.setLayoutX(130);
@@ -454,6 +470,7 @@ public class Scenehandler {
         addressText.setPrefWidth(120);
         pane.getChildren().add(addressText);
 
+        //Here we create a label that print an error when the user forgot to enter customers address
         Label addressErrorText = new Label();
         addressErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         addressErrorText.setText("Needs to be filled");
@@ -469,6 +486,7 @@ public class Scenehandler {
         zipText.setPrefWidth(60);
         pane.getChildren().add(zipText);
 
+        //Here we create a label that print an error when the user forgot to enter customers zip code
         Label zipErrorText = new Label();
         zipErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         zipErrorText.setText("Needs to be filled");
@@ -521,6 +539,7 @@ public class Scenehandler {
         successText.setVisible(false);
         pane.getChildren().add(successText);
 
+        // Here we create the button that creates a new customer in the database (it starts checking all errors and stores data if no errors)
         Button butCreate = new Button();
         butCreate.setLayoutX(300);
         butCreate.setLayoutY(300);
