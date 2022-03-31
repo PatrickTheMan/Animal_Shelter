@@ -942,6 +942,42 @@ public class Scenehandler {
             bookingScene();
         });
 
+        // Here we create the button that deletes the selected booking
+        Button deleteBooking = new Button();
+        deleteBooking.setLayoutX(253);
+        deleteBooking.setLayoutY(350);
+        deleteBooking.setText("Delete Booking");
+        pane.getChildren().add(deleteBooking);
+        deleteBooking.setOnAction(actionEvent ->{
+
+            // Here the booking item gets selected
+            bookingItem bookingItem = (bookingItem) bookingTable.getSelectionModel().getSelectedItem();
+
+            // Here the booking is deleted in the sql server
+            SQL.deleteBooking(phoneText.getText(),bookingItem.getAnimalName(),Integer.parseInt(bookingItem.getWeekStart()),Integer.parseInt(bookingItem.getWeekAmount()));
+
+            // The items are cleared
+            bookingTable.getItems().clear();
+
+            // This part makes a new list
+            List listNames;
+            listNames = SQL.getStartAndAmount(phoneText.getText());
+
+            for (int i = 0; i < listNames.size(); i++) {
+                bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString()));
+                i+=2;
+            }
+
+            // The scoreCol gets a rule, that it should start as descending
+            weekStartCol.setSortType(TableColumn.SortType.ASCENDING);
+
+            // The tableView uses the rule from before
+            bookingTable.getSortOrder().addAll(weekStartCol);
+
+            // Clears the data list
+            listNames.clear();
+
+        });
 
     }
 
