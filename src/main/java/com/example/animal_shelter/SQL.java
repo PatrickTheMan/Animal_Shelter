@@ -42,13 +42,15 @@ public class SQL {
         connect();
 
         try {
+            // reads the stored procedure to find all available weeks
             PreparedStatement ps = con.prepareStatement("weekAvailable '"+address+"'");
+            // executes the stored procedure until no data has been found
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()){
-
+                // stores the available number of cages
                 String no = rs.getString(1);
-
+                // adds the number of available cages in arraylist
                 projectList.add(no);
 
             }
@@ -76,7 +78,9 @@ public class SQL {
     public static void addCustomer(String phoneNum, String customerName, String email, String address, int zipCode){
         connect();
         try {
+            // reads the stored procedure to create a new customer in the database
             PreparedStatement ps = con.prepareStatement("exec insertCustomer '"+phoneNum+"', '"+customerName+"', '"+email+"', '"+address+"', "+zipCode+";");
+            // executes the stored procedure 
             ps.executeUpdate();
 
             System.out.println("Customer ("+customerName+") has been added");
@@ -256,6 +260,11 @@ public class SQL {
         }
     }
 
+    /**
+     * is looking for an animal based on the phone number to se the starting week and how long it will stay
+     * @param phoneNum is the phone number of customer to find the right animal
+     * @return the name of the animal, starting week and number of weeks
+     */
     public static List<String> getStartAndAmount(String phoneNum){
         List<String> projectList = new ArrayList<>();
         connect();

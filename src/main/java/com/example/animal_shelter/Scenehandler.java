@@ -558,6 +558,7 @@ public class Scenehandler {
         phoneErrorText.setVisible(false);
         pane.getChildren().add(phoneErrorText);
 
+        //Here we create a text field to enter customer E-Mail address
         TextField mailText = new TextField();
         mailText.setLayoutX(130);
         mailText.setLayoutY(150);
@@ -573,6 +574,7 @@ public class Scenehandler {
         mailErrorText.setVisible(false);
         pane.getChildren().add(mailErrorText);
 
+        //Here we create a text field to enter customer address
         TextField addressText = new TextField();
         addressText.setLayoutX(130);
         addressText.setLayoutY(200);
@@ -589,6 +591,7 @@ public class Scenehandler {
         addressErrorText.setVisible(false);
         pane.getChildren().add(addressErrorText);
 
+        //Here we create a text field to enter customer zip code number
         TextField zipText = new TextField();
         zipText.setLayoutX(290);
         zipText.setLayoutY(200);
@@ -767,6 +770,7 @@ public class Scenehandler {
 
         });
 
+        // Here we create the button that switches to the booking
         Button butBooking = new Button();
         butBooking.setLayoutX(50);
         butBooking.setLayoutY(350);
@@ -799,6 +803,7 @@ public class Scenehandler {
         phoneLabel.setStyle("-fx-font-size: 20");
         pane.getChildren().add(phoneLabel);
 
+        // Here we create a tableview that show the current booking 1.column animal name 2.column starting week 3.column number of weeks
         TableView bookingTable = new TableView();
         bookingTable.setLayoutX(50);
         bookingTable.setLayoutY(100);
@@ -853,6 +858,7 @@ public class Scenehandler {
             }
         });
 
+        // Here we create the button that switches to the booking
         Button butBooking = new Button();
         butBooking.setLayoutX(50);
         butBooking.setLayoutY(350);
