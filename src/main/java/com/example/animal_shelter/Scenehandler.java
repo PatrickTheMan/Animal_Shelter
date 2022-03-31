@@ -441,13 +441,14 @@ public class Scenehandler {
             if (phoneText.getText().length()==8){
                 phoneErrorText.setVisible(false);
 
-
+                // Not found
                 if (!SQL.checkPhoneNum(phoneText.getText())){
                     phoneErrorText.setVisible(true);
                     phoneErrorText.setText("Customer not found");
                     error=true;
                 }
 
+                // Try for number
                 try {
                     Integer.parseInt(phoneText.getText());
                 } catch (NumberFormatException e){
@@ -459,13 +460,17 @@ public class Scenehandler {
             } else {
                 phoneErrorText.setVisible(true);
                 error=true;
+
+                // Needs to be filled
                 if (phoneText.getText().length()<=0){
                     phoneErrorText.setText("Needs to be filled");
                 } else {
+                    // Not 8 chars long
                     phoneErrorText.setText("PhoneNum needs to be 8 chars");
                 }
             }
 
+            // Needs to be filled
             if (nameText.getText().length()>0){
                 nameErrorText.setVisible(false);
             } else {
@@ -473,6 +478,7 @@ public class Scenehandler {
                 error=true;
             }
 
+            // Needs to be filled
             if (typeText.getText().length()>0){
                 typeErrorText.setVisible(false);
             } else {
@@ -480,8 +486,7 @@ public class Scenehandler {
                 error=true;
             }
 
-
-
+            // Function of the button if there is no errors
             if (!error){
                 successText.setVisible(true);
 
@@ -512,9 +517,11 @@ public class Scenehandler {
 
     public static void customerScene(){
 
+        // The root is created
         Pane pane = new Pane();
         pane.setStyle("-fx-background-color: LightBlue");
 
+        // The scene is set and the stage aswell
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
 
@@ -649,21 +656,25 @@ public class Scenehandler {
         pane.getChildren().add(butCreate);
         butCreate.setOnAction(actionEvent ->{
 
+            // The error state of the create customer
             boolean error;
             error=false;
             if (successText.isVisible()){
                 successText.setVisible(false);
             }
 
+            // The different errors for the phoneNum
             if (phoneText.getText().length()==8){
                 phoneErrorText.setVisible(false);
 
+                // The user already exists
                 if (SQL.checkPhoneNum(phoneText.getText())){
                     phoneErrorText.setVisible(true);
                     phoneErrorText.setText("Duplicate found");
                     error=true;
                 }
 
+                // Try for number
                 try {
                     Integer.parseInt(phoneText.getText());
                 } catch (NumberFormatException e){
@@ -675,13 +686,17 @@ public class Scenehandler {
             } else {
                 phoneErrorText.setVisible(true);
                 error=true;
+
+                // Needs to be filled
                 if (phoneText.getText().length()<=0){
                     phoneErrorText.setText("Needs to be filled");
                 } else {
+                    // Needs to be 8 chars
                     phoneErrorText.setText("PhoneNum needs to be 8 chars");
                 }
             }
 
+            // Needs to be filled
             if (nameText.getText().length()>0){
                 nameErrorText.setVisible(false);
             } else {
@@ -689,6 +704,7 @@ public class Scenehandler {
                 error=true;
             }
 
+            // Needs to be filled
             if (addressText.getText().length()>0){
                 addressErrorText.setVisible(false);
             } else {
@@ -696,15 +712,18 @@ public class Scenehandler {
                 error=true;
             }
 
+            // The errors in the mailText
             if (mailText.getText().length()>0){
                 mailErrorText.setVisible(false);
 
+                // Already exists
                 if (SQL.checkEmail(mailText.getText())){
                     mailErrorText.setVisible(true);
                     mailErrorText.setText("Duplicate found");
                     error=true;
                 }
 
+                // Not an emial
                 if (!mailText.getText().contains("@") || !mailText.getText().contains(".")){
                     mailErrorText.setVisible(true);
                     mailErrorText.setText("Not a email");
@@ -712,11 +731,13 @@ public class Scenehandler {
                 }
 
             } else {
+                //Needs to be filled
                 mailErrorText.setVisible(true);
                 mailErrorText.setText("Needs to be filled");
                 error=true;
             }
 
+            // Needs to be filled or needs to be 4 chars long
             if (zipText.getText().length()==4){
                 zipErrorText.setVisible(false);
             } else {
@@ -725,10 +746,11 @@ public class Scenehandler {
                 if (zipText.getText().length()<=0){
                     zipErrorText.setText("Needs to be filled");
                 } else {
-                    zipErrorText.setText("4 char max.");
+                    zipErrorText.setText("4 chars");
                 }
             }
 
+            // The Function of the button if there is no errors
             if (!error){
 
                 successText.setVisible(true);
@@ -761,14 +783,14 @@ public class Scenehandler {
     //region [Show Bookings]
 
     public static void showBookingsScene(){
+
+        // The root of the scene
         Pane pane = new Pane();
         pane.setStyle("-fx-background-color: LightBlue");
 
+        // The scene is set and the stage aswell
         Scene scene = new Scene(pane,420,420);
         masterStage.setScene(scene);
-
-        ArrayList<ArrayList> data = new ArrayList<>();
-        ObservableList<ArrayList> arrayLists = FXCollections.observableArrayList();
 
         Label phoneLabel = new Label();
         phoneLabel.setText("Phone:");
@@ -783,12 +805,15 @@ public class Scenehandler {
         bookingTable.setPrefHeight(220);
         bookingTable.setPrefWidth(300);
 
+        // The tableColoum with the animals name
         TableColumn<bookingItem, String> nameCol = new TableColumn<>("AnimalName");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("animalName"));
 
+        // The tableColoum with the week start col
         TableColumn<bookingItem, String> weekStartCol = new TableColumn<>("WeekStart");
         weekStartCol.setCellValueFactory(new PropertyValueFactory<>("weekStart"));
 
+        // The tableColoum with the week amount col
         TableColumn<bookingItem, String> weekAmountCol = new TableColumn<>("WeekAmount");
         weekAmountCol.setCellValueFactory(new PropertyValueFactory<>("weekAmount"));
 
