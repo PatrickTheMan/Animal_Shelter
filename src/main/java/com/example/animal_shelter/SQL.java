@@ -37,13 +37,17 @@ public class SQL {
      * @param address is the location/address where the user will search
      * @return all cages that are available
      */
-    public static List<String> getAvailableCages(String address){
+    public static List<String> getAvailableCages(String addressZip){
         List<String> projectList = new ArrayList<>();
         connect();
 
+        // This part splits the address and the zip
+        String address = addressZip.split(", ")[0];
+        int zip  = Integer.parseInt(addressZip.split(", ")[1]);
+
         try {
             // reads the stored procedure to find all available weeks
-            PreparedStatement ps = con.prepareStatement("weekAvailable '"+address+"'");
+            PreparedStatement ps = con.prepareStatement("weekAvailableV2 '"+address+"',"+zip);
             // executes the stored procedure until no data has been found
             ResultSet rs = ps.executeQuery();
 
@@ -83,8 +87,6 @@ public class SQL {
             // executes the stored procedure and creates a new customer
             ps.executeUpdate();
 
-            System.out.println("Customer ("+customerName+") has been added");
-
             ps.close();
 
             disconnect();
@@ -107,8 +109,6 @@ public class SQL {
             PreparedStatement ps = con.prepareStatement("exec insertAnimal '"+animalName+"','"+animalTyp+"','"+phoneNum+"';");
             // executes the stored procedure and creates a new animal
             ps.executeUpdate();
-
-            System.out.println("Animal ("+animalName+") has been added");
 
             ps.close();
 
@@ -207,7 +207,7 @@ public class SQL {
      * @param weekStart is the week number when the animal will arrive
      * @param weekAmount is the number of weeks the animal will stay at the shelter
      */
-    public static void addBooking(String phoneNum, String animalName,String location, int weekStart, int weekAmount){
+    public static void addBooking(String phoneNum, String animalName,String addressZip, int weekStart, int weekAmount){
 
         connect();
 
@@ -223,9 +223,13 @@ public class SQL {
             return;
         }
 
+        // This part splits the address and the zip
+        String address = addressZip.split(", ")[0];
+        int zip  = Integer.parseInt(addressZip.split(", ")[1]);
+
         try {
             // reads the stored procedure to create a booking
-            PreparedStatement ps = con.prepareStatement("exec insertBooking '"+phoneNum+"','"+animalName+"','"+location+"',"+weekStart+","+weekAmount+";");
+            PreparedStatement ps = con.prepareStatement("exec insertBookingV2 '"+phoneNum+"','"+animalName+"','"+address+"','"+zip+"',"+weekStart+","+weekAmount+";");
             // executes the stored procedure and creates the booking
             ps.executeUpdate();
             ps.close();
@@ -234,6 +238,7 @@ public class SQL {
             disconnect();
             return;
         }
+
 
         disconnect();
 
@@ -341,4 +346,62 @@ public class SQL {
         }
     }
 
+    /**
+     * get all existing location from the database where animal shelters are located
+     * @return
+     */
+    public static List<String> getLocation(){
+        List<String> locationList = new ArrayList<>();
+        connect();
+        try {
+            // reads the stored procedure to choose the location
+            PreparedStatement ps = con.prepareStatement("getLocation ;");
+            // executes the stored procedure until there is no data
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+
+                //stores
+                String no = rs.getString(1)+", "+rs.getInt(2);
+                // adds the locations to the arraylist
+                locationList.add(no);
+
+            }
+            ps.close();
+            rs.close();
+            disconnect();
+
+            return locationList;
+
+        }catch (SQLException e) {
+            System.err.println(e.getMessage());
+            disconnect();
+            return null;
+        }
+    }
+
+    /**
+     * creates a new location in the database
+     * @param address is the address of the location
+     * @param cages is the number of cages at the location
+     * @param zipCode is the city code of the location
+     */
+    public static void addLocation(String address, int cages, int zipCode){
+        connect();
+        try{
+            // reads the stored procedure to create a new animal in the database
+            PreparedStatement ps = con.prepareStatement("exec insertLocation '"+address+"',"+cages+","+zipCode+";");
+            // executes the stored procedure and creates a new animal
+            ps.executeUpdate();
+
+            System.out.println("new location created");
+
+            ps.close();
+
+            disconnect();
+        }catch(SQLException e){
+            System.err.println(e.getMessage());
+            disconnect();
+        }
+    }
 }

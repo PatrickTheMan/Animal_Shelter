@@ -42,7 +42,6 @@ public class Scenehandler {
         butCustomer.setLayoutY(350);
         butCustomer.setLayoutX(250);
         butCustomer.setText("Create Customer");
-        pane.getChildren().add(butCustomer);
         butCustomer.setOnAction(actionEvent -> {
             customerScene();
         });
@@ -54,7 +53,7 @@ public class Scenehandler {
         phoneErrorText.setLayoutY(75);
         phoneErrorText.setPrefWidth(200);
         phoneErrorText.setVisible(false);
-        pane.getChildren().add(phoneErrorText);
+
 
         // Here we create a dropdown box that can show the animals of a customer
         ComboBox animalBox = new ComboBox();
@@ -62,7 +61,6 @@ public class Scenehandler {
         animalBox.setLayoutY(100);
         animalBox.setPrefWidth(200);
         animalBox.setVisibleRowCount(5);
-        pane.getChildren().add(animalBox);
 
         // Here we create a label that prints an error when the user forgot to select an animal
         Label animalErrorText = new Label();
@@ -72,17 +70,15 @@ public class Scenehandler {
         animalErrorText.setLayoutY(125);
         animalErrorText.setPrefWidth(200);
         animalErrorText.setVisible(false);
-        pane.getChildren().add(animalErrorText);
 
         // Here we create a label that print an error when the user forgot to select the number of weeks
         Label weekAmountErrorText = new Label();
         weekAmountErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         weekAmountErrorText.setText("Needs to have selected");
         weekAmountErrorText.setLayoutX(200);
-        weekAmountErrorText.setLayoutY(200);
+        weekAmountErrorText.setLayoutY(250);
         weekAmountErrorText.setPrefWidth(150);
         weekAmountErrorText.setVisible(false);
-        pane.getChildren().add(weekAmountErrorText);
 
         // Here we create the dropdown box that shows the options for first week of a booking period
         ComboBox weekStartBox = new ComboBox();
@@ -97,10 +93,9 @@ public class Scenehandler {
         weekStartErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
         weekStartErrorText.setText("Needs to have selected");
         weekStartErrorText.setLayoutX(50);
-        weekStartErrorText.setLayoutY(200);
+        weekStartErrorText.setLayoutY(250);
         weekStartErrorText.setPrefWidth(150);
         weekStartErrorText.setVisible(false);
-        pane.getChildren().add(weekStartErrorText);
 
         // Here we create the dropdown box that shows the options to choose the amount of weeks you want to book
         ComboBox weekAmountBox = new ComboBox();
@@ -113,7 +108,7 @@ public class Scenehandler {
             // The weekamountbox gets checked
             if (weekAmountBox.getValue()!=null){
                 // A list is received from the database with the available cages
-                List listWeeksAvailableCages = SQL.getAvailableCages("Krike Ale 13");
+                List listWeeksAvailableCages = SQL.getAvailableCages(locationBox.getValue().toString());
                 ArrayList listWeeksAvailable = new ArrayList();
 
                 // The list is gone through and all the unavailable weeks (depending on the amount of weeks you want) gets nullyfied
@@ -121,14 +116,14 @@ public class Scenehandler {
                     // If the week has no available cages, then this nullyfies the weekamount behind the given week, so there isn't any overlap problems
                     if (Integer.parseInt(listWeeksAvailableCages.get(i).toString())==0){
                         for (int j = i-Integer.parseInt(weekAmountBox.getValue().toString())+1; j<i; j++){
-                            if (j>0){
+                            if (j>=0){
                                 listWeeksAvailableCages.set(j,0);
                             }
                         }
                     }
                 }
                 // This adds the available weeks to the new arraylist
-                for (int i = 0; i < listWeeksAvailableCages.size()-Integer.parseInt(weekAmountBox.getValue().toString())+1; i++) {
+                for (int i = 0; i <= listWeeksAvailableCages.size()-Integer.parseInt(weekAmountBox.getValue().toString()); i++) {
                     if (Integer.parseInt(listWeeksAvailableCages.get(i).toString())>0){
                         listWeeksAvailable.add(i+1);
                     }
@@ -152,15 +147,19 @@ public class Scenehandler {
             }
 
         });
-        pane.getChildren().add(weekAmountBox);
 
-        // This adds the 52 weeks in a year
-        List weekAmountList = new ArrayList();
-        for (int i = 1; i < 53; i++) {
-            weekAmountList.add(i);
-        }
-        ObservableList weekAmountObservableList = FXCollections.observableArrayList(weekAmountList);
-        weekAmountBox.setItems(weekAmountObservableList);
+        // Set the function for the location box
+        locationBox.setOnAction(e -> {
+
+            // This adds the 52 weeks in a year
+            List weekAmountList = new ArrayList();
+            for (int i = 1; i < 53; i++) {
+                weekAmountList.add(i);
+            }
+            ObservableList weekAmountObservableList = FXCollections.observableArrayList(weekAmountList);
+            weekAmountBox.setItems(weekAmountObservableList);
+
+        });
 
         // Here we create the textfield where you can type in the phone number for the customer that wants to make a booking
         TextField phoneText = new TextField();
@@ -197,51 +196,44 @@ public class Scenehandler {
                 }
             }
         });
-        pane.getChildren().add(phoneText);
 
         Label phoneLabel = new Label();
         phoneLabel.setText("Phone:");
         phoneLabel.setLayoutX(50);
         phoneLabel.setLayoutY(48);
         phoneLabel.setStyle("-fx-font-size: 20");
-        pane.getChildren().add(phoneLabel);
 
         Label animalLabel = new Label();
         animalLabel.setText("Animal:");
         animalLabel.setLayoutX(50);
         animalLabel.setLayoutY(98);
         animalLabel.setStyle("-fx-font-size: 20");
-        pane.getChildren().add(animalLabel);
 
         Label weekStartLabel = new Label();
         weekStartLabel.setText("Week Amount");
         weekStartLabel.setStyle("-fx-font-size: 18");
         weekStartLabel.setLayoutX(200);
-        weekStartLabel.setLayoutY(150);
-        pane.getChildren().add(weekStartLabel);
+        weekStartLabel.setLayoutY(200);
 
         Label weekAmountLabel = new Label();
         weekAmountLabel.setText("Week Start");
         weekAmountLabel.setStyle("-fx-font-size: 18");
         weekAmountLabel.setLayoutX(50);
-        weekAmountLabel.setLayoutY(150);
-        pane.getChildren().add(weekAmountLabel);
+        weekAmountLabel.setLayoutY(200);
 
         // Here we create a label that print a text when the booking was successful
         Label successText = new Label();
         successText.setStyle("-fx-text-fill: GREEN; -fx-font-size: 15;");
         successText.setText("Success: Booking Made");
         successText.setLayoutX(50);
-        successText.setLayoutY(300);
+        successText.setLayoutY(265);
         successText.setVisible(false);
-        pane.getChildren().add(successText);
 
         // Here we create the button that makes the booking (it starts checking all errors and stores data if no errors)
         Button butBook = new Button();
         butBook.setLayoutX(258);
         butBook.setLayoutY(300);
         butBook.setText("Make Booking");
-        pane.getChildren().add(butBook);
         butBook.setOnAction(actionEvent -> {
 
             // This is the overall error state of the booking
@@ -308,6 +300,14 @@ public class Scenehandler {
                 error=true;
             }
 
+            // The location box is empty
+            if (locationBox.getValue()!=null){
+                locationErrorText.setVisible(false);
+            } else {
+                locationErrorText.setVisible(true);
+                error=true;
+            }
+
             // The function of the button if there is no errors
             if (!error){
                 successText.setVisible(true);
@@ -322,7 +322,7 @@ public class Scenehandler {
                 // The booking is made
                 SQL.addBooking(phoneText.getText(),
                         animalBox.getValue().toString(),
-                        "Krike Ale 13",
+                        locationBox.getValue().toString(),
                         Integer.parseInt(weekStartBox.getValue().toString()),
                         Integer.parseInt(weekAmountBox.getValue().toString())
                 );
@@ -331,6 +331,7 @@ public class Scenehandler {
                 animalBox.getItems().clear();
                 weekStartBox.getItems().clear();
                 weekAmountBox.setValue(null);
+                locationBox.setValue(null);
             }
 
         });
@@ -340,7 +341,6 @@ public class Scenehandler {
         butAnimal.setLayoutX(50);
         butAnimal.setLayoutY(350);
         butAnimal.setText("Register Animal");
-        pane.getChildren().add(butAnimal);
         butAnimal.setOnAction(actionEvent -> {
             animalScene();
         });
@@ -350,7 +350,6 @@ public class Scenehandler {
         butShowBook.setLayoutX(151);
         butShowBook.setLayoutY(350);
         butShowBook.setText("Show bookings");
-        pane.getChildren().add(butShowBook);
         butShowBook.setOnAction(actionEvent -> {
             showBookingsScene();
         });
@@ -883,11 +882,14 @@ public class Scenehandler {
         TableColumn<bookingItem, String> weekAmountCol = new TableColumn<>("WeekAmount");
         weekAmountCol.setCellValueFactory(new PropertyValueFactory<>("weekAmount"));
 
-        nameCol.setPrefWidth(100);
-        weekStartCol.setPrefWidth(100);
-        weekAmountCol.setPrefWidth(100);
-        bookingTable.getColumns().addAll(nameCol, weekStartCol, weekAmountCol);
-        pane.getChildren().add(bookingTable);
+        TableColumn<bookingItem, String> locationCol = new TableColumn<>("Location");
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
+
+        locationCol.setPrefWidth(128);
+        nameCol.setPrefWidth(90);
+        weekStartCol.setPrefWidth(90);
+        weekAmountCol.setPrefWidth(90);
+        bookingTable.getColumns().addAll(nameCol, weekStartCol, weekAmountCol,locationCol);
 
         // Here we create the phoneText box
         TextField phoneText = new TextField();
@@ -897,6 +899,10 @@ public class Scenehandler {
         pane.getChildren().add(phoneText);
         phoneText.setOnKeyTyped(e -> {
 
+            if (phoneErrorText.isVisible()){
+                phoneErrorText.setVisible(false);
+            }
+
             if (phoneText.getText().length()==8){
                 if (SQL.checkPhoneNum(phoneText.getText())){
 
@@ -904,7 +910,7 @@ public class Scenehandler {
                     List listNames;
                     listNames = SQL.getStartAndAmount(phoneText.getText());
 
-                    // This populates the bookingtable
+                    // This populates the bookingable
                     for (int i = 0; i < listNames.size(); i++) {
                         bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString()));
                         i+=2;
@@ -925,12 +931,11 @@ public class Scenehandler {
 
             } else if (bookingTable.getItems().size()>0) {
                 bookingTable.getItems().clear();
-
-                if (phoneErrorText.isVisible()){
-                    phoneErrorText.setVisible(false);
-                }
             }
         });
+
+        // Here the booking table is added, så the tab functions properly
+        pane.getChildren().add(bookingTable);
 
         // Here we create the button that switches to the booking
         Button butBooking = new Button();
@@ -964,8 +969,8 @@ public class Scenehandler {
             listNames = SQL.getStartAndAmount(phoneText.getText());
 
             for (int i = 0; i < listNames.size(); i++) {
-                bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString()));
-                i+=2;
+                bookingTable.getItems().addAll(new bookingItem(listNames.get(i).toString(),listNames.get(i+1).toString(),listNames.get(i+2).toString(),listNames.get(i+3).toString()));
+                i+=3;
             }
 
             // The scoreCol gets a rule, that it should start as descending
@@ -979,6 +984,161 @@ public class Scenehandler {
 
         });
 
+    }
+
+    //endregion
+
+    //region [Location Scene]
+
+    public static void createLocationScene(){
+
+        // The root is created
+        Pane pane = new Pane();
+        pane.setStyle("-fx-background-color: Lightblue");
+
+        // The scene is set and the stage aswell
+        Scene scene = new Scene(pane,420,420);
+        masterStage.setScene(scene);
+
+        // here we create a textField to enter an address
+        TextField addressText = new TextField();
+        addressText.setLayoutX(130);
+        addressText.setLayoutY(50);
+        addressText.setPrefWidth(220);
+        pane.getChildren().add(addressText);
+
+        // Here we create a label that print an error when the user forgot to select the witch week
+        Label addressErrorText = new Label();
+        addressErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
+        addressErrorText.setText("Needs to have selected");
+        addressErrorText.setLayoutX(130);
+        addressErrorText.setLayoutY(75);
+        addressErrorText.setPrefWidth(220);
+        addressErrorText.setVisible(false);
+        pane.getChildren().add(addressErrorText);
+
+        // here we create a textField to enter the zip code
+        TextField zipText = new TextField();
+        zipText.setLayoutX(130);
+        zipText.setLayoutY(100);
+        zipText.setPrefWidth(60);
+        pane.getChildren().add(zipText);
+
+        // Here we create a label that print an error when the user forgot to select the witch week
+        Label cagesErrorText = new Label();
+        cagesErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
+        cagesErrorText.setText("Needs to have selected");
+        cagesErrorText.setLayoutX(175);
+        cagesErrorText.setLayoutY(175);
+        cagesErrorText.setPrefWidth(100);
+        cagesErrorText.setVisible(false);
+        pane.getChildren().add(cagesErrorText);
+
+        TextField cagesText = new TextField();
+        cagesText.setLayoutX(175);
+        cagesText.setLayoutY(150);
+        cagesText.setPrefWidth(175);
+        pane.getChildren().add(cagesText);
+
+        Label cagesLabel = new Label();
+        cagesLabel.setText("Cage amount:");
+        cagesLabel.setLayoutX(50);
+        cagesLabel.setLayoutY(148);
+        cagesLabel.setStyle("-fx-font-size: 18");
+        pane.getChildren().add(cagesLabel);
+
+        // Here we create a label that print an error when the user forgot to select the witch week
+        Label zipErrorText = new Label();
+        zipErrorText.setStyle("-fx-text-fill: RED; -fx-font-size: 10;");
+        zipErrorText.setLayoutX(130);
+        zipErrorText.setLayoutY(125);
+        zipErrorText.setPrefWidth(60);
+        zipErrorText.setVisible(false);
+        pane.getChildren().add(zipErrorText);
+
+        Label zipLabel = new Label();
+        zipLabel.setText("Zip:");
+        zipLabel.setLayoutX(50);
+        zipLabel.setLayoutY(98);
+        zipLabel.setStyle("-fx-font-size: 18");
+        pane.getChildren().add(zipLabel);
+
+        Label addressLabel = new Label();
+        addressLabel.setText("Address:");
+        addressLabel.setLayoutX(50);
+        addressLabel.setLayoutY(48);
+        addressLabel.setStyle("-fx-font-size: 18");
+        pane.getChildren().add(addressLabel);
+
+        // Here we create a label that print a text when the booking was successful
+        Label successText = new Label();
+        successText.setStyle("-fx-text-fill: GREEN; -fx-font-size: 15;");
+        successText.setText("Success: Location Made");
+        successText.setLayoutX(50);
+        successText.setLayoutY(225);
+        successText.setVisible(false);
+
+        // Here we create the button the creates a new location
+        Button butCreateLocation = new Button();
+        butCreateLocation.setLayoutX(252);
+        butCreateLocation.setLayoutY(225);
+        butCreateLocation.setText("Create location");
+        pane.getChildren().add(butCreateLocation);
+        butCreateLocation.setOnAction(actionEvent -> {
+
+            // This is the error state of the function
+            boolean error;
+            error=false;
+
+            // Needs to be filled
+            if (addressText.getText().length()>0){
+                addressErrorText.setVisible(false);
+            } else {
+                addressErrorText.setVisible(true);
+            }
+
+            // Needs to be filled
+            if (cagesText.getText().length()>0){
+                cagesErrorText.setVisible(false);
+            } else {
+                cagesErrorText.setVisible(true);
+            }
+
+            // Needs to be filled or needs to be 4 chars long
+            if (zipText.getText().length()==4){
+                zipErrorText.setVisible(false);
+            } else {
+                zipErrorText.setVisible(true);
+                error=true;
+                if (zipText.getText().length()<=0){
+                    zipErrorText.setText("Needs to be filled");
+                } else {
+                    zipErrorText.setText("4 chars");
+                }
+            }
+
+            // The function of the button
+            if (!error){
+                successText.setVisible(true);
+
+                SQL.addLocation(addressText.getText(),Integer.parseInt(cagesText.getText()),Integer.parseInt(zipText.getText()));
+
+                addressText.setText("");
+                cagesText.setText("");
+                zipText.setText("");
+            }
+
+        });
+
+        // Here we create the button that switches to the booking
+        Button butBooking = new Button();
+        butBooking.setLayoutX(50);
+        butBooking.setLayoutY(350);
+        butBooking.setText("Booking");
+        pane.getChildren().add(butBooking);
+        butBooking.setOnAction(actionEvent ->{
+            bookingScene();
+        });
     }
 
     //endregion

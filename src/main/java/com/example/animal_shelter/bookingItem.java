@@ -28,6 +28,13 @@ public class bookingItem {
         this.weekAmount = weekAmount;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     //endregion
 
@@ -36,6 +43,7 @@ public class bookingItem {
     private String animalName = null;
     private String weekStart = null;
     private String weekAmount = null;
+    private String location = null;
 
     //endregion
 
@@ -44,10 +52,11 @@ public class bookingItem {
     public bookingItem() {
     }
 
-    public bookingItem(String animalName, String weekStart, String weekAmount) {
+    public bookingItem(String animalName, String weekStart, String weekAmount, String location) {
         this.animalName = animalName;
         this.weekStart = weekStart;
         this.weekAmount = weekAmount;
+        this.location = location;
     }
 
     //endregion
